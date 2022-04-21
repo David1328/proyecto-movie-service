@@ -52,7 +52,7 @@ def escoger_pelicula_mas_punteada (userId):
     indice=aleatorio.index.tolist()[0]
     return df_ranking["movieId"][indice]
    
-def foundMovie(inuser):
+def buscar_pelicula(inuser):
     recomend=recomendar(inuser)
     arreglo_tmdbId=[]
     for inrt in recomend:
@@ -72,9 +72,9 @@ def foundMovie(inuser):
 
     return arreglo_tmdbId
 def recomendation_movie(userId):   
-    movies = foundMovie(userId)
+    movies = buscar_pelicula(userId)
     while(movies ==0):
-        movies = foundMovie(userId)
+        movies = buscar_pelicula(userId)
     datset_recomendacion=pd.DataFrame(columns=["title","imdb","sinopsis","date","image"])
 
     for mov in movies:
@@ -87,10 +87,10 @@ def recomendation_movie(userId):
             datset_recomendacion=datset_recomendacion.append({"title":pelicula["original_title"].tolist()[0],"imdb":pelicula["imdb_id"].tolist()[0],"sinopsis":pelicula["tagline"].tolist()[0],"date":pelicula["release_date"].tolist()[0],"image":url_imagen},ignore_index=True)
         else:
             stringJson=pelicula["belongs_to_collection"].tolist()[0]
-            replaces1=stringJson.replace("'s",'s')
-            replaces2=replaces1.replace("None",'"None"')
-            replaces=replaces2.replace("'",'"')
-            jsonpelicula=loads(replaces)
+            replaces1=stringJson.replace("'s",'s').replace("None",'"None"').replace("'",'"')
+            #replaces2=replaces1.replace("None",'"None"')
+            #replaces=replaces2.replace("'",'"')
+            jsonpelicula=loads(replaces1)
             imagen="https://image.tmdb.org/t/p/w500/"+jsonpelicula["poster_path"]
             datset_recomendacion=datset_recomendacion.append({"title":pelicula["original_title"].tolist()[0],"imdb":pelicula["imdb_id"].tolist()[0],"sinopsis":pelicula["tagline"].tolist()[0],"date":pelicula["release_date"].tolist()[0],"image":imagen},ignore_index=True)
     return datset_recomendacion
@@ -110,9 +110,6 @@ jsonPrueba ={
 def usuarios():
     return json.dumps(usuariosDataSet)
 
-@app.route("/prueba")
-def prueba():
-    return jsonPrueba
 
 @app.route('/peliculasRecomendadas')
 def peliculasRecomendadas():
