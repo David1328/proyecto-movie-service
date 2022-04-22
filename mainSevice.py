@@ -112,7 +112,7 @@ def usuarios():
 
 
 @app.route('/peliculasRecomendadas')
-def peliculasRecomendadas():
+def peliculasRecomendadas()->json:
     parametros = request.args.get('UserId','no esta pana')
     predice=recomendation_movie(int(parametros))
     pruebaPelis = list()
